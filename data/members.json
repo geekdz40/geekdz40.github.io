@@ -1,25 +1,5 @@
 {
   "members": [
-    {
-      "id": 1,
-      "name": " إياد سغيري",
-      "role": "president",
-      "avatar": "/placeholder-user.jpg?height=100&width=100",
-      "bio": "رئيس نادي GeekDZ، متخصص في الأمن السيبراني وتطوير الويب"
-    },
-    {
-      "id": 2,
-      "name": "=====",
-      "role": "vice-president",
-      "avatar": "/placeholder-user.jpg?height=100&width=100",
-      "bio": "نائبة الرئيس"
-    },
-    {
-      "id": 3,
-      "name": "====",
-      "role": "member",
-      "avatar": "/placeholder-user.jpg?height=100&width=100",
-      "bio": "عضوة فعالة"
-    }
+    
   ]
 }
