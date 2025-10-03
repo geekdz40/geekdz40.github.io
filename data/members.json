@@ -2,7 +2,7 @@
   "members": [
     {
       "id": 1,
-      "name": "إياد",
+      "name": " إياد سغيري",
       "role": "president",
       "avatar": "/placeholder-user.jpg?height=100&width=100",
       "bio": "رئيس نادي GeekDZ، متخصص في الأمن السيبراني وتطوير الويب"
@@ -12,14 +12,14 @@
       "name": "شروق غانمي",
       "role": "vice-president",
       "avatar": "/placeholder-user.jpg?height=100&width=100",
-      "bio": "نائبة الرئيس، مهتمة بالذكاء الاصطناعي وعلوم البيانات"
+      "bio": "نائبة الرئيس"
     },
     {
       "id": 3,
       "name": "نور الهدى غانمي",
       "role": "member",
       "avatar": "/placeholder-user.jpg?height=100&width=100",
-      "bio": "مطور تطبيقات موبايل ومهتم بتقنيات Flutter و React Native"
+      "bio": "عضوة فعالة"
     }
   ]
 }
