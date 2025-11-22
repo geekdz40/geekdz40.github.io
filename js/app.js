@@ -1,7 +1,49 @@
-// Main JavaScript for GeekDZ Landing Page
-// Handles navigation, member loading, filtering, and interactions
+// GeekDZ 3D Arabic Website - Interactive Elements
+// Handles modal, members, counters, and UI animations
 
 ;(() => {
+  // ===================================
+  // Modal Functionality
+  // ===================================
+  const joinButton = document.getElementById("join-button")
+  const modalOverlay = document.getElementById("modal-overlay")
+  const modalClose = document.getElementById("modal-close")
+
+  // Open modal when Join Us button is clicked
+  if (joinButton && modalOverlay) {
+    joinButton.addEventListener("click", (e) => {
+      e.preventDefault()
+      modalOverlay.classList.add("active")
+      document.body.style.overflow = "hidden"
+    })
+  }
+
+  // Close modal when close button is clicked
+  if (modalClose && modalOverlay) {
+    modalClose.addEventListener("click", () => {
+      modalOverlay.classList.remove("active")
+      document.body.style.overflow = ""
+    })
+  }
+
+  // Close modal when clicking outside
+  if (modalOverlay) {
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.classList.remove("active")
+        document.body.style.overflow = ""
+      }
+    })
+  }
+
+  // Close modal with ESC key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modalOverlay && modalOverlay.classList.contains("active")) {
+      modalOverlay.classList.remove("active")
+      document.body.style.overflow = ""
+    }
+  })
+
   // ===================================
   // Mobile Menu Toggle
   // ===================================
@@ -60,13 +102,19 @@
       const target = document.querySelector(this.getAttribute("href"))
 
       if (target) {
-        const headerHeight = header.offsetHeight
+        const headerHeight = header ? header.offsetHeight : 0
         const targetPosition = target.offsetTop - headerHeight
 
         window.scrollTo({
           top: targetPosition,
           behavior: "smooth",
         })
+
+        // Close mobile menu if open
+        if (navMenu && navMenu.classList.contains("active")) {
+          mobileMenuToggle.setAttribute("aria-expanded", "false")
+          navMenu.classList.remove("active")
+        }
       }
     })
   })
@@ -86,34 +134,37 @@
       }
 
       const data = await response.json()
-      allMembers = data.members
+      allMembers = data.members || []
 
       if (membersGrid) {
-        displayMembers(allMembers)
+        if (allMembers.length === 0) {
+          displayNoResults()
+        } else {
+          displayMembers(allMembers)
+        }
       }
     } catch (error) {
       console.error("Error loading members:", error)
       if (membersGrid) {
-        membersGrid.innerHTML = `
-          <div class="loading">
-            <p style="color: var(--color-text-secondary);">
-              عذراً، حدث خطأ في تحميل بيانات الأعضاء. يرجى المحاولة لاحقاً.
-            </p>
-          </div>
-        `
+        displayNoResults()
       }
     }
+  }
+
+  function displayNoResults() {
+    if (!membersGrid) return
+    membersGrid.innerHTML = `
+      <div class="loading" style="grid-column: 1 / -1;">
+        <p style="color: var(--color-text-secondary);">لا توجد نتائج</p>
+      </div>
+    `
   }
 
   function displayMembers(members) {
     if (!membersGrid) return
 
     if (members.length === 0) {
-      membersGrid.innerHTML = `
-        <div class="loading">
-          <p style="color: var(--color-text-secondary);">لا توجد نتائج</p>
-        </div>
-      `
+      displayNoResults()
       return
     }
 
@@ -122,14 +173,15 @@
         (member, index) => `
       <article class="member-card" style="animation-delay: ${index * 0.1}s">
         <img 
-          src="${member.avatar}" 
+          src="${member.avatar || '/placeholder-user.jpg'}" 
           alt="صورة ${member.name}"
           class="member-avatar"
           loading="lazy"
+          onerror="this.src='/placeholder-user.jpg'"
         />
         <h3 class="member-name">${member.name}</h3>
         <p class="member-role">${getRoleInArabic(member.role)}</p>
-        <p class="member-bio">${member.bio}</p>
+        <p class="member-bio">${member.bio || ""}</p>
       </article>
     `,
       )
@@ -169,7 +221,98 @@
   })
 
   // ===================================
-  // Intersection Observer for Animations
+  // Animated Counters
+  // ===================================
+  function animateCounter(element) {
+    const target = parseInt(element.getAttribute("data-target"))
+    const duration = 2000
+    const increment = target / (duration / 16)
+    let current = 0
+
+    const updateCounter = () => {
+      current += increment
+      if (current < target) {
+        element.textContent = Math.floor(current) + "+"
+        requestAnimationFrame(updateCounter)
+      } else {
+        element.textContent = target + "+"
+      }
+    }
+
+    updateCounter()
+  }
+
+  // Intersection Observer for counters
+  const counterObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !entry.target.classList.contains("counted")) {
+          entry.target.classList.add("counted")
+          animateCounter(entry.target)
+        }
+      })
+    },
+    { threshold: 0.5 }
+  )
+
+  document.querySelectorAll(".stat-number").forEach((counter) => {
+    counterObserver.observe(counter)
+  })
+
+  // ===================================
+  // Icon Hover Effects
+  // ===================================
+  const floatingIcons = document.querySelectorAll(".icon-float")
+
+  floatingIcons.forEach((icon) => {
+    icon.addEventListener("mouseenter", function () {
+      this.style.transform = "translateY(-10px) scale(1.1)"
+    })
+
+    icon.addEventListener("mouseleave", function () {
+      this.style.transform = "translateY(0) scale(1)"
+    })
+  })
+
+  // ===================================
+  // Parallax Effect for Floating Elements
+  // ===================================
+  let mouseX = 0
+  let mouseY = 0
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 20
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 20
+
+    // Apply subtle parallax to icons
+    floatingIcons.forEach((icon, index) => {
+      const offsetX = mouseX * (0.05 + index * 0.01)
+      const offsetY = mouseY * (0.05 + index * 0.01)
+      const currentTransform = icon.style.transform || ""
+      if (!currentTransform.includes("scale")) {
+        icon.style.transform = `translate(${offsetX}px, ${offsetY}px)`
+      }
+    })
+  })
+
+  // ===================================
+  // Circuit Board Animation
+  // ===================================
+  const circuitLines = document.querySelectorAll(".circuit-line")
+  const circuitNodes = document.querySelectorAll(".circuit-node")
+
+  // Animate circuit lines with staggered delays
+  circuitLines.forEach((line, index) => {
+    line.style.animationDelay = `${index * 0.1}s`
+  })
+
+  // Animate circuit nodes with staggered delays
+  circuitNodes.forEach((node, index) => {
+    node.style.animationDelay = `${index * 0.2}s`
+  })
+
+  // ===================================
+  // Intersection Observer for Section Animations
   // ===================================
   const observerOptions = {
     threshold: 0.1,
@@ -188,7 +331,7 @@
   // Observe sections for fade-in animation
   document.querySelectorAll("section").forEach((section) => {
     section.style.opacity = "0"
-    section.style.transform = "translateY(20px)"
+    section.style.transform = "translateY(30px)"
     section.style.transition = "opacity 0.6s ease, transform 0.6s ease"
     observer.observe(section)
   })
@@ -209,35 +352,21 @@
   })
 
   // ===================================
-  // Lazy Loading Images
-  // ===================================
-  if ("IntersectionObserver" in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target
-          img.src = img.dataset.src || img.src
-          img.classList.add("loaded")
-          observer.unobserve(img)
-        }
-      })
-    })
-
-    document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
-      imageObserver.observe(img)
-    })
-  }
-
-  // ===================================
   // Keyboard Navigation Enhancement
   // ===================================
   document.addEventListener("keydown", (e) => {
-    // ESC key closes mobile menu
-    if (e.key === "Escape" && navMenu && navMenu.classList.contains("active")) {
-      if (mobileMenuToggle) {
-        mobileMenuToggle.setAttribute("aria-expanded", "false")
+    // ESC key closes mobile menu or modal
+    if (e.key === "Escape") {
+      if (navMenu && navMenu.classList.contains("active")) {
+        if (mobileMenuToggle) {
+          mobileMenuToggle.setAttribute("aria-expanded", "false")
+        }
+        navMenu.classList.remove("active")
       }
-      navMenu.classList.remove("active")
+      if (modalOverlay && modalOverlay.classList.contains("active")) {
+        modalOverlay.classList.remove("active")
+        document.body.style.overflow = ""
+      }
     }
   })
 
