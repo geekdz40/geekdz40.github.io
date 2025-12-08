@@ -1,22 +1,20 @@
-// GeekDZ 3D Arabic Website - Interactive Elements
+// GeekDZ 3D Website - Interactive Elements
 // Handles modal, members, counters, and UI animations
 
 ;(() => {
   // ===================================
-  // Modal Functionality
+  // Join Us Button - Redirect to external link
   // ===================================
   const joinButton = document.getElementById("join-button")
+  
+  // Join Us button now redirects to external link (handled by anchor tag href)
+  // No modal functionality needed
+
+  // ===================================
+  // Modal Functionality (for other uses)
+  // ===================================
   const modalOverlay = document.getElementById("modal-overlay")
   const modalClose = document.getElementById("modal-close")
-
-  // Open modal when Join Us button is clicked
-  if (joinButton && modalOverlay) {
-    joinButton.addEventListener("click", (e) => {
-      e.preventDefault()
-      modalOverlay.classList.add("active")
-      document.body.style.overflow = "hidden"
-    })
-  }
 
   // Close modal when close button is clicked
   if (modalClose && modalOverlay) {
@@ -155,7 +153,7 @@
     if (!membersGrid) return
     membersGrid.innerHTML = `
       <div class="loading" style="grid-column: 1 / -1;">
-        <p style="color: var(--color-text-secondary);">لا توجد نتائج</p>
+        <p style="color: var(--color-text-secondary);">No results found</p>
       </div>
     `
   }
@@ -174,13 +172,13 @@
       <article class="member-card" style="animation-delay: ${index * 0.1}s">
         <img 
           src="${member.avatar || '/placeholder-user.jpg'}" 
-          alt="صورة ${member.name}"
+          alt="${member.name} photo"
           class="member-avatar"
           loading="lazy"
           onerror="this.src='/placeholder-user.jpg'"
         />
         <h3 class="member-name">${member.name}</h3>
-        <p class="member-role">${getRoleInArabic(member.role)}</p>
+        <p class="member-role">${getRoleInEnglish(member.role)}</p>
         <p class="member-bio">${member.bio || ""}</p>
       </article>
     `,
@@ -188,11 +186,11 @@
       .join("")
   }
 
-  function getRoleInArabic(role) {
+  function getRoleInEnglish(role) {
     const roles = {
-      president: "الرئيس",
-      "vice-president": "نائب الرئيس",
-      member: "عضو",
+      president: "President",
+      "vice-president": "Vice President",
+      member: "Member",
     }
     return roles[role] || role
   }
