@@ -1,5 +1,34 @@
 {
   "members": [
-    
+    {
+      "name": "إياد سغيري",
+      "role": "president",
+      "bio": "رئيس النادي",
+      "avatar": "/placeholder-user.jpg"
+    },
+    {
+      "name": "طه أمين الدين لعصامي",
+      "role": "member",
+      "bio": "رئيس فوج السايبر سكيوريتي",
+      "avatar": "/placeholder-user.jpg"
+    },
+    {
+      "name": "شروق غانمي",
+      "role": "member",
+      "bio": "رئيسة فوج البحث",
+      "avatar": "/placeholder-user.jpg"
+    },
+    {
+      "name": "منيب عقون",
+      "role": "member",
+      "bio": "رئيس فوج البلوكتشاين",
+      "avatar": "/placeholder-user.jpg"
+    },
+    {
+      "name": "نصاح عبد المومن",
+      "role": "member",
+      "bio": "رئيس فوج تطوير الويب",
+      "avatar": "/placeholder-user.jpg"
+    }
   ]
 }
