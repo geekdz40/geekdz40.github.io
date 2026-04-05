@@ -187,24 +187,19 @@
       },
       vertexShader: `
         attribute float size;
-        attribute vec3 color;
-        varying vec3 vColor;
         uniform float time;
         
         void main() {
-          vColor = color;
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           gl_PointSize = size * (300.0 / -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
         }
       `,
       fragmentShader: `
-        varying vec3 vColor;
-        
         void main() {
           float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
           float alpha = 1.0 - smoothstep(0.0, 0.5, distanceToCenter);
-          gl_FragColor = vec4(vColor, alpha * 0.8);
+          gl_FragColor = vec4(1.0, 0.83, 0.0, alpha * 0.8);
         }
       `,
       transparent: true,
