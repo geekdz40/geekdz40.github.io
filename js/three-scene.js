@@ -1,6 +1,6 @@
 // Immersive 3D Scene for GeekDZ - Elite Cyber-Intelligence Club
 // Dark futuristic aesthetic with neon-blue highlights
-
+// Central glowing logo, holographic particles, floating geometric shapes, digital shards, animated data streams, and dynamic lighting
 ;(() => {
   // Check for WebGL support
   function checkWebGLSupport() {
