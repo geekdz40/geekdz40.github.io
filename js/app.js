@@ -1,386 +1,229 @@
-// GeekDZ 3D Website - Interactive Elements
-// Handles modal, members, counters, and UI animations
+// GeekDZ — app.js
+// Handles: mobile menu, smooth scroll, members, counters, section reveal, modal
 
 ;(() => {
   // ===================================
-  // Join Us Button - Redirect to external link
+  // Mobile Menu
   // ===================================
-  const joinButton = document.getElementById("join-button")
-  
-  // Join Us button now redirects to external link (handled by anchor tag href)
-  // No modal functionality needed
-
-  // ===================================
-  // Modal Functionality (for other uses)
-  // ===================================
-  const modalOverlay = document.getElementById("modal-overlay")
-  const modalClose = document.getElementById("modal-close")
-
-  // Close modal when close button is clicked
-  if (modalClose && modalOverlay) {
-    modalClose.addEventListener("click", () => {
-      modalOverlay.classList.remove("active")
-      document.body.style.overflow = ""
-    })
-  }
-
-  // Close modal when clicking outside
-  if (modalOverlay) {
-    modalOverlay.addEventListener("click", (e) => {
-      if (e.target === modalOverlay) {
-        modalOverlay.classList.remove("active")
-        document.body.style.overflow = ""
-      }
-    })
-  }
-
-  // Close modal with ESC key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalOverlay && modalOverlay.classList.contains("active")) {
-      modalOverlay.classList.remove("active")
-      document.body.style.overflow = ""
-    }
-  })
-
-  // ===================================
-  // Mobile Menu Toggle
-  // ===================================
-  const mobileMenuToggle = document.querySelector(".mobile-menu-toggle")
-  const navMenu = document.querySelector(".nav-menu")
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle')
+  const navMenu = document.querySelector('.nav-menu')
 
   if (mobileMenuToggle && navMenu) {
-    mobileMenuToggle.addEventListener("click", () => {
-      const isExpanded = mobileMenuToggle.getAttribute("aria-expanded") === "true"
-      mobileMenuToggle.setAttribute("aria-expanded", !isExpanded)
-      navMenu.classList.toggle("active")
+    mobileMenuToggle.addEventListener('click', () => {
+      const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true'
+      mobileMenuToggle.setAttribute('aria-expanded', String(!isExpanded))
+      navMenu.classList.toggle('active')
     })
 
-    // Close menu when clicking on a link
-    const navLinks = navMenu.querySelectorAll("a")
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        mobileMenuToggle.setAttribute("aria-expanded", "false")
-        navMenu.classList.remove("active")
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuToggle.setAttribute('aria-expanded', 'false')
+        navMenu.classList.remove('active')
       })
     })
 
-    // Close menu when clicking outside
-    document.addEventListener("click", (e) => {
+    document.addEventListener('click', e => {
       if (!mobileMenuToggle.contains(e.target) && !navMenu.contains(e.target)) {
-        mobileMenuToggle.setAttribute("aria-expanded", "false")
-        navMenu.classList.remove("active")
+        mobileMenuToggle.setAttribute('aria-expanded', 'false')
+        navMenu.classList.remove('active')
       }
     })
   }
 
   // ===================================
-  // Sticky Header on Scroll
+  // Sticky Header
   // ===================================
-  const header = document.querySelector(".header")
-  let lastScroll = 0
+  const header = document.querySelector('.header')
 
-  window.addEventListener("scroll", () => {
-    const currentScroll = window.pageYOffset
-
-    if (currentScroll > 100) {
-      header.classList.add("scrolled")
-    } else {
-      header.classList.remove("scrolled")
+  window.addEventListener('scroll', () => {
+    if (header) {
+      header.classList.toggle('scrolled', window.pageYOffset > 80)
     }
+  }, { passive: true })
 
-    lastScroll = currentScroll
+  // ===================================
+  // Smooth Scroll
+  // ===================================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'))
+      if (!target) return
+      e.preventDefault()
+      const headerHeight = header ? header.offsetHeight : 0
+      window.scrollTo({
+        top: target.offsetTop - headerHeight - 16,
+        behavior: 'smooth'
+      })
+    })
   })
 
   // ===================================
-  // Smooth Scroll for Navigation Links
+  // Modal
   // ===================================
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault()
-      const target = document.querySelector(this.getAttribute("href"))
+  const modalOverlay = document.getElementById('modal-overlay')
+  const modalClose = document.getElementById('modal-close')
 
-      if (target) {
-        const headerHeight = header ? header.offsetHeight : 0
-        const targetPosition = target.offsetTop - headerHeight
+  function closeModal() {
+    if (modalOverlay) {
+      modalOverlay.classList.remove('active')
+      document.body.style.overflow = ''
+    }
+  }
 
-        window.scrollTo({
-          top: targetPosition,
-          behavior: "smooth",
-        })
-
-        // Close mobile menu if open
-        if (navMenu && navMenu.classList.contains("active")) {
-          mobileMenuToggle.setAttribute("aria-expanded", "false")
-          navMenu.classList.remove("active")
-        }
-      }
+  if (modalClose) modalClose.addEventListener('click', closeModal)
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', e => {
+      if (e.target === modalOverlay) closeModal()
     })
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal()
+      if (navMenu && navMenu.classList.contains('active')) {
+        mobileMenuToggle?.setAttribute('aria-expanded', 'false')
+        navMenu.classList.remove('active')
+      }
+    }
   })
 
   // ===================================
   // Load Members from JSON
   // ===================================
+  const membersGrid = document.getElementById('members-grid')
   let allMembers = []
-  const membersGrid = document.getElementById("members-grid")
+
+  // Inline fallback members (shown if /data/members.json is unreachable)
+  const fallbackMembers = [
+    { name: 'إياد سغيري', role: 'president', bio: 'رئيس النادي', avatar: '/placeholder-user.jpg' },
+    { name: 'طه أمين الدين لعصامي', role: 'member', bio: 'رئيس فوج السايبر سكيوريتي', avatar: '/placeholder-user.jpg' },
+    { name: 'شروق غانمي', role: 'member', bio: 'رئيسة فوج البحث', avatar: '/placeholder-user.jpg' },
+    { name: 'منيب عقون', role: 'member', bio: 'رئيس فوج البلوكتشاين', avatar: '/placeholder-user.jpg' },
+    { name: 'نصاح عبد المومن', role: 'member', bio: 'رئيس فوج تطوير الويب', avatar: '/placeholder-user.jpg' }
+  ]
 
   async function loadMembers() {
     try {
-      const response = await fetch("/data/members.json")
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
+      const response = await fetch('/data/members.json')
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       allMembers = data.members || []
-
-      if (membersGrid) {
-        if (allMembers.length === 0) {
-          displayNoResults()
-        } else {
-          displayMembers(allMembers)
-        }
-      }
-    } catch (error) {
-      console.error("Error loading members:", error)
-      if (membersGrid) {
-        displayNoResults()
-      }
+    } catch {
+      allMembers = fallbackMembers
     }
-  }
-
-  function displayNoResults() {
-    if (!membersGrid) return
-    membersGrid.innerHTML = `
-      <div class="loading" style="grid-column: 1 / -1;">
-        <p style="color: var(--color-text-secondary);">No results found</p>
-      </div>
-    `
+    displayMembers(allMembers)
   }
 
   function displayMembers(members) {
     if (!membersGrid) return
 
-    if (members.length === 0) {
-      displayNoResults()
+    if (!members.length) {
+      membersGrid.innerHTML = `<div class="loading"><p style="color:var(--color-text-muted)">No members found.</p></div>`
       return
     }
 
-    membersGrid.innerHTML = members
-      .map(
-        (member, index) => `
-      <article class="member-card" style="animation-delay: ${index * 0.1}s">
-        <img 
-          src="${member.avatar || '/placeholder-user.jpg'}" 
-          alt="${member.name} photo"
+    membersGrid.innerHTML = members.map((m, i) => `
+      <article class="member-card" style="animation-delay:${i * 0.08}s">
+        <img
+          src="${m.avatar || '/placeholder-user.jpg'}"
+          alt="${m.name}"
           class="member-avatar"
           loading="lazy"
           onerror="this.src='/placeholder-user.jpg'"
         />
-        <h3 class="member-name">${member.name}</h3>
-        <p class="member-role">${getRoleInEnglish(member.role)}</p>
-        <p class="member-bio">${member.bio || ""}</p>
+        <h3 class="member-name">${m.name}</h3>
+        <p class="member-role">${roleLabel(m.role)}</p>
+        <p class="member-bio">${m.bio || ''}</p>
       </article>
-    `,
-      )
-      .join("")
+    `).join('')
   }
 
-  function getRoleInEnglish(role) {
-    const roles = {
-      president: "President",
-      "vice-president": "Vice President",
-      member: "Member",
-    }
-    return roles[role] || role
+  function roleLabel(role) {
+    return { president: 'President', 'vice-president': 'Vice President', member: 'Member' }[role] || role
   }
 
-  // ===================================
-  // Filter Members
-  // ===================================
-  const filterButtons = document.querySelectorAll(".filter-btn")
-
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      // Update active button
-      filterButtons.forEach((btn) => btn.classList.remove("active"))
-      button.classList.add("active")
-
-      // Filter members
-      const filter = button.getAttribute("data-filter")
-
-      if (filter === "all") {
-        displayMembers(allMembers)
-      } else {
-        const filtered = allMembers.filter((member) => member.role === filter)
-        displayMembers(filtered)
-      }
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      const filter = btn.getAttribute('data-filter')
+      displayMembers(filter === 'all' ? allMembers : allMembers.filter(m => m.role === filter))
     })
   })
 
   // ===================================
   // Animated Counters
   // ===================================
-  function animateCounter(element) {
-    const target = parseInt(element.getAttribute("data-target"))
-    const duration = 2000
-    const increment = target / (duration / 16)
-    let current = 0
+  function animateCounter(el) {
+    if (el.classList.contains('counted')) return
+    el.classList.add('counted')
 
-    const updateCounter = () => {
-      current += increment
-      if (current < target) {
-        element.textContent = Math.floor(current) + "+"
-        requestAnimationFrame(updateCounter)
-      } else {
-        element.textContent = target + "+"
-      }
+    const target = parseInt(el.getAttribute('data-target'), 10)
+    const duration = 1800
+    const start = performance.now()
+
+    function update(now) {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      // Ease out
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = Math.floor(eased * target)
+      el.textContent = current + '+'
+      if (progress < 1) requestAnimationFrame(update)
+      else el.textContent = target + '+'
     }
 
-    updateCounter()
+    requestAnimationFrame(update)
   }
 
-  // Intersection Observer for counters
-  const counterObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !entry.target.classList.contains("counted")) {
-          entry.target.classList.add("counted")
-          animateCounter(entry.target)
-        }
-      })
-    },
-    { threshold: 0.5 }
-  )
-
-  document.querySelectorAll(".stat-number").forEach((counter) => {
-    counterObserver.observe(counter)
-  })
-
-  // ===================================
-  // Icon Hover Effects
-  // ===================================
-  const floatingIcons = document.querySelectorAll(".icon-float")
-
-  floatingIcons.forEach((icon) => {
-    icon.addEventListener("mouseenter", function () {
-      this.style.transform = "translateY(-10px) scale(1.1)"
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) animateCounter(entry.target)
     })
+  }, { threshold: 0.4 })
 
-    icon.addEventListener("mouseleave", function () {
-      this.style.transform = "translateY(0) scale(1)"
-    })
-  })
+  document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el))
 
   // ===================================
-  // Parallax Effect for Floating Elements
+  // Section Reveal on Scroll
   // ===================================
-  let mouseX = 0
-  let mouseY = 0
-
-  document.addEventListener("mousemove", (e) => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 20
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 20
-
-    // Apply subtle parallax to icons
-    floatingIcons.forEach((icon, index) => {
-      const offsetX = mouseX * (0.05 + index * 0.01)
-      const offsetY = mouseY * (0.05 + index * 0.01)
-      const currentTransform = icon.style.transform || ""
-      if (!currentTransform.includes("scale")) {
-        icon.style.transform = `translate(${offsetX}px, ${offsetY}px)`
-      }
-    })
-  })
-
-  // ===================================
-  // Circuit Board Animation
-  // ===================================
-  const circuitLines = document.querySelectorAll(".circuit-line")
-  const circuitNodes = document.querySelectorAll(".circuit-node")
-
-  // Animate circuit lines with staggered delays
-  circuitLines.forEach((line, index) => {
-    line.style.animationDelay = `${index * 0.1}s`
-  })
-
-  // Animate circuit nodes with staggered delays
-  circuitNodes.forEach((node, index) => {
-    node.style.animationDelay = `${index * 0.2}s`
-  })
-
-  // ===================================
-  // Intersection Observer for Section Animations
-  // ===================================
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = "1"
-        entry.target.style.transform = "translateY(0)"
+        entry.target.classList.add('visible')
+        sectionObserver.unobserve(entry.target)
       }
     })
-  }, observerOptions)
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' })
 
-  // Observe sections for fade-in animation
-  document.querySelectorAll("section").forEach((section) => {
-    section.style.opacity = "0"
-    section.style.transform = "translateY(30px)"
-    section.style.transition = "opacity 0.6s ease, transform 0.6s ease"
-    observer.observe(section)
-  })
+  document.querySelectorAll('section:not(.hero-section)').forEach(s => sectionObserver.observe(s))
 
   // ===================================
-  // Activity Cards Hover Effect
+  // Activity card tilt on hover (subtle)
   // ===================================
-  const activityCards = document.querySelectorAll(".activity-card")
-
-  activityCards.forEach((card) => {
-    card.addEventListener("mouseenter", function () {
-      this.style.transform = "translateY(-10px) scale(1.02)"
+  document.querySelectorAll('.activity-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect()
+      const x = (e.clientX - rect.left) / rect.width - 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5
+      card.style.transform = `translateY(-6px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`
     })
-
-    card.addEventListener("mouseleave", function () {
-      this.style.transform = "translateY(0) scale(1)"
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = ''
     })
   })
 
   // ===================================
-  // Keyboard Navigation Enhancement
-  // ===================================
-  document.addEventListener("keydown", (e) => {
-    // ESC key closes mobile menu or modal
-    if (e.key === "Escape") {
-      if (navMenu && navMenu.classList.contains("active")) {
-        if (mobileMenuToggle) {
-          mobileMenuToggle.setAttribute("aria-expanded", "false")
-        }
-        navMenu.classList.remove("active")
-      }
-      if (modalOverlay && modalOverlay.classList.contains("active")) {
-        modalOverlay.classList.remove("active")
-        document.body.style.overflow = ""
-      }
-    }
-  })
-
-  // ===================================
-  // Initialize on DOM Ready
+  // Init
   // ===================================
   function init() {
+    document.body.classList.add('loaded')
     loadMembers()
-
-    // Add loaded class to body for CSS transitions
-    document.body.classList.add("loaded")
   }
 
-  // Run initialization
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
   } else {
     init()
   }
