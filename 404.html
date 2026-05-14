@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>404 — GeekDZ Tech Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #08090d;
+      --surface: #0e1018;
+      --surface2: #13161f;
+      --border: #1c1f2b;
+      --border2: #252a38;
+      --red: #e5322d;
+      --red-dim: rgba(229,50,45,0.12);
+      --red-glow: rgba(229,50,45,0.06);
+      --text: #dde2f0;
+      --muted: #5a6280;
+      --subtle: #3a4060;
+      --accent: #00d4ff;
+    }
+
+    html, body { 
+      height: 100%; 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: 'Outfit', sans-serif; 
+      overflow: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Dot grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--border2) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Red corner glow — bottom left like a badge */
+    .glow-bl {
+      position: fixed;
+      bottom: -180px;
+      left: -120px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(229,50,45,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-tr {
+      position: fixed;
+      top: -100px;
+      right: -80px;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(229,50,45,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      gap: 0;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .wrap {
+        padding: 1.5rem;
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(229,50,45,0.35);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--red);
+      background: var(--red-dim);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: rise 0.5s ease 0.1s forwards, glitch 3s ease-in-out infinite 0.5s;
+      backdrop-filter: blur(10px);
+    }
+    .badge::before {
+      content: '> ';
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0.7;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse 1.8s ease infinite;
+    }
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+    @keyframes terminal-blink {
+      0%, 49%, 100% { opacity: 1; }
+      50%, 99% { opacity: 0.3; }
+    }
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* Giant 404 */
+    .num {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: clamp(90px, 18vw, 160px);
+      line-height: 1;
+      letter-spacing: -6px;
+      position: relative;
+      display: inline-block;
+      margin-bottom: 4px;
+      opacity: 0;
+      animation: rise 0.6s ease 0.25s forwards;
+    }
+    .num-inner {
+      background: linear-gradient(170deg, #fff 20%, #9aa0b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+    /* Red underline accent */
+    .num::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 10%;
+      width: 80%;
+      height: 4px;
+      background: var(--red);
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .headline {
+      font-size: clamp(16px, 3vw, 22px);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: rise 0.5s ease 0.4s forwards, terminal-blink 1.5s ease-in-out 0.4s infinite;
+      background: linear-gradient(90deg, var(--text), var(--muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+    .headline::before {
+      content: '$ ';
+      color: var(--red);
+      margin-right: 4px;
+    }
+
+    .sub {
+      font-size: clamp(13px, 2.5vw, 14px);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: rise 0.5s ease 0.52s forwards;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.01em;
+    }
+    .sub::before {
+      content: 'debug > ';
+      color: var(--red);
+      opacity: 0.7;
+    }
+    .sub code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(229,50,45,0.15);
+      border: 1px solid rgba(229,50,45,0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      color: #ff8885;
+      font-weight: 500;
+    }
+
+    .cards {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: rise 0.5s ease 0.65s forwards;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .card {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      min-width: 140px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red-glow);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover {
+      border-color: rgba(229,50,45,0.5);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(229,50,45,0.15);
+    }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--red);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+    .card:hover .card-icon {
+      transform: translateY(-4px) scale(1.15);
+      filter: drop-shadow(0 4px 12px rgba(229,50,45,0.4));
+    }
+    .card.primary .card-icon {
+      color: #ff6b68;
+    }
+    .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      position: relative;
+      z-index: 2;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      position: relative;
+      z-index: 2;
+    }
+    .card.primary {
+      border-color: rgba(229,50,45,0.6);
+      background: linear-gradient(135deg, var(--red-dim), rgba(229,50,45,0.08));
+      box-shadow: 0 0 20px rgba(229,50,45,0.1);
+    }
+    .card.primary:hover {
+      border-color: rgba(229,50,45,0.8);
+      box-shadow: 0 8px 32px rgba(229,50,45,0.25);
+    }
+    .card.primary .card-label { color: #ff8885; }
+
+    /* Divider */
+    .divider {
+      width: 100%;
+      max-width: 400px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border2) 30%, var(--border2) 70%, transparent);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: rise 0.4s ease 0.75s forwards;
+    }
+
+    /* Bottom signature */
+    .sig {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--subtle);
+      letter-spacing: 0.04em;
+      opacity: 0;
+      animation: rise 0.4s ease 0.85s forwards;
+    }
+    .sig span { color: var(--red); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .wrap {
+        padding: 1.5rem;
+      }
+      .cards {
+        gap: 10px;
+      }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 1rem; }
+      .num { font-size: clamp(60px, 12vw, 100px); letter-spacing: -4px; }
+      .headline { font-size: clamp(13px, 2vw, 16px); }
+      .sub { font-size: clamp(11px, 1.8vw, 13px); max-width: 95%; }
+      .cards { gap: 8px; flex-direction: column; }
+      .card { 
+        width: 100%; 
+        max-width: 100%; 
+        padding: 12px 14px; 
+        min-width: unset;
+      }
+      .card-icon { font-size: 22px; width: 28px; height: 28px; }
+      .card-label { font-size: 12px; }
+      .card-desc { font-size: 10px; }
+      .rh-badge { 
+        font-size: 9px; 
+        bottom: 12px; 
+        right: 12px;
+        padding: 4px 8px;
+      }
+      .divider { margin-bottom: 16px; }
+      .sig { font-size: 9px; }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding: 0.75rem; }
+      .num { font-size: clamp(50px, 10vw, 80px); }
+      .card { padding: 10px 12px; }
+    }
+
+    /* Red Hat badge bottom right */
+    .rh-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--subtle);
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0;
+      animation: rise 0.4s ease 1.0s forwards;
+      transition: all 0.3s ease;
+      padding: 6px 12px;
+      border: 1px solid rgba(229,50,45,0.2);
+      border-radius: 999px;
+    }
+    .rh-badge:hover {
+      color: var(--text);
+      border-color: rgba(229,50,45,0.4);
+      background: rgba(229,50,45,0.05);
+    }
+    .rh-dot {
+      width: 8px; height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bl"></div>
+  <div class="glow-tr"></div>
+
+  <div class="wrap">
+
+    <div class="badge">
+      <div class="badge-dot"></div>
+      GeekDZ Tech Club
+    </div>
+
+    <div class="num">
+      <span class="num-inner">404</span>
+    </div>
+
+    <p class="headline">Sorry, Page Not Found</p>
+    <p class="sub">
+      The path <code id="path-out">/</code> does not exist on this website.<br/>
+      The link might be incorrect or the page has been moved elsewhere.
+    </p>
+
+    <div class="cards">
+      <a class="card primary" href="/">
+        <div class="card-icon"><i class="fas fa-house"></i></div>
+        <div class="card-label">Home</div>
+        <div class="card-desc">Return Home</div>
+      </a>
+      <a class="card" href="https://github.com/geekdz40" target="_blank" rel="noopener">
+        <div class="card-icon"><i class="fab fa-github"></i></div>
+        <div class="card-label">GitHub</div>
+        <div class="card-desc">Club Projects</div>
+      </a>
+      <a class="card" href="https://docs.geekdz.tech" target="_blank" rel="noopener">
+        <div class="card-icon"><i class="fas fa-book"></i></div>
+        <div class="card-label">Docs</div>
+        <div class="card-desc">Resources & Support</div>
+      </a>
+      <a class="card" href="mailto:geekdz@univ-khenchela.dz">
+        <div class="card-icon"><i class="fas fa-at"></i></div>
+        <div class="card-label">Email</div>
+        <div class="card-desc">geekdz@univ-khenchela.dz</div>
+      </a>
+      <a class="card" href="https://www.instagram.com/geekdz.club" target="_blank" rel="noopener">
+        <div class="card-icon"><i class="fab fa-instagram"></i></div>
+        <div class="card-label">Instagram</div>
+        <div class="card-desc">Follow Us</div>
+      </a>
+      <a class="card" href="https://www.facebook.com/geekdz" target="_blank" rel="noopener">
+        <div class="card-icon"><i class="fab fa-facebook"></i></div>
+        <div class="card-label">Facebook</div>
+        <div class="card-desc">Connect With Us</div>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="sig">GeekDZ Tech Club &nbsp;·&nbsp; <span>Root Access to the Future</span> &nbsp;·&nbsp; <span>Abbas Laghrour University</span></p>
+
+  </div>
+
+  <div class="rh-badge">
+    <div class="rh-dot"></div>
+    Red Hat Academy Partner
+  </div>
+
+  <script>
+    const p = window.location.pathname;
+    document.getElementById('path-out').textContent = p;
+    
+    function addTerminalEffect() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.animation = `rise 0.5s ease ${0.65 + index * 0.08}s forwards`;
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', addTerminalEffect);
+    
+    if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      document.documentElement.style.scrollBehavior = 'smooth';
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'h' || e.key === 'H') window.location.href = '/';
+      if (e.key === 'g' || e.key === 'G') window.open('https://github.com/geekdz40', '_blank');
+    });
+  </script>
+</body>
+</html>
