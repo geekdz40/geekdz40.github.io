@@ -1,8 +1,7 @@
 # 🚀 GeekDZ - Technology Club
 ## Root Access to the Future
 
-[![Website](https://img.shields.io/badge/Website-geekdz.tech-blue?style=flat-square)](https://geekdz.tech)
-[![Facebook](https://img.shields.io/badge/Facebook-GeekDZ-1877F2?style=flat-square&logo=facebook)](https://www.facebook.com/geekdz)
+[![Website](https://img.shields.io/badge/Website-geekdz.tech-blue?style=flat-square)](https://geekdz40.github.io)
 [![Instagram](https://img.shields.io/badge/Instagram-geekdz.club-E1306C?style=flat-square&logo=instagram)](https://www.instagram.com/geekdz.club)
 [![GitHub](https://img.shields.io/badge/GitHub-geekdz40-181717?style=flat-square&logo=github)](https://github.com/geekdz40)
 [![Telegram](https://img.shields.io/badge/Telegram-GeekDZ-0088cc?style=flat-square&logo=telegram)](https://t.me/geekdz40)
@@ -25,18 +24,6 @@ To inspire and empower students to become skilled technologists by providing han
 - 🌐 **Web Development**
 
 ---
-
-## 👥 Our Teams
-
-GeekDZ is organized into specialized divisions, each led by dedicated team leaders:
-
-| Team | Lead | Focus Area |
-|------|------|-----------|
-| 🔐 **Cybersecurity Division** | طه أمين الدين لعصامي | Network security, penetration testing, system hardening |
-| 🔬 **Research Division** | شروق غانمي | Scientific innovation, research projects, publications |
-| ⛓️ **Blockchain Division** | منيب عقون | Cryptocurrency, smart contracts, Web3 technologies |
-| 🌐 **Web Development Division** | نصاح عبد المومن | Frontend, backend, full-stack development |
-| 📋 **Leadership** | إياد سغيري | Club President & Overall Direction |
 
 ---
 
@@ -68,12 +55,11 @@ GeekDZ is organized into specialized divisions, each led by dedicated team leade
 
 | Platform | Link |
 |----------|------|
-| 🌍 **Official Website** | [geekdz.tech](https://geekdz.tech) |
+| 🌍 **Official Website** | [geekdz40.github.io](https://geekdz40.github.io) |
 | 📧 **Email** | [geekdz@univ-khenchela.dz](mailto:geekdz@univ-khenchela.dz) |
 | 📍 **Location** | Abbas Laghrour University, Khenchela, Algeria |
 | 💬 **Telegram** | [@geekdz](https://t.me/geekdz40) |
-| 📘 **Facebook** | [GeekDZ](https://www.facebook.com/geekdz) |
-| 📷 **Instagram** | [@geekdz.club](https://www.instagram.com/geekdz.club) |
+| 📷 **Instagram** | [@geekdz.club](https://www.instagram.com/geek.dz.club) |
 | 💻 **GitHub** | [@geekdz40](https://github.com/geekdz40) |
 | 🔗 **LinkedIn** | [GeekDZ](https://www.linkedin.com/company/GeekDZ) |
 
@@ -122,4 +108,4 @@ Special thanks to:
 
 ---
 
-**Made with ❤️ by GeekDZ Club | © 2025-2026 | All rights reserved**
+**Made with ❤️ by GeekDZ Club | © 2026-2025 | All rights reserved**
